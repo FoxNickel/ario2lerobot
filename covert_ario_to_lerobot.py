@@ -23,7 +23,9 @@ def convert_one_episode(task, episode, episode_path, dataset):
     #     f"joint_position shape: {joint_position.shape}, image_high_frames: {len(image_high_frames)}, left_wrist_image_frames: {len(left_wrist_image_frames)}, right_wrist_image_frames: {len(right_wrist_image_frames)}"
     # )
     state_zeros = np.zeros(8)
-    for i in tqdm(range(joint_position.shape[0]), desc=f"Processing {task} {episode}"):
+    task_name = task + "_" + episode
+    # for i in tqdm(range(joint_position.shape[0]), desc=f"Processing {task} {episode}"):
+    for i in range(joint_position.shape[0]):
         dataset.add_frame(
             {
                 "image_high": image_high_frames[i],
@@ -31,7 +33,7 @@ def convert_one_episode(task, episode, episode_path, dataset):
                 "right_wrist_image": right_wrist_image_frames[i],
                 "state": state_zeros,
                 "actions": joint_position[i],
-                "task": task
+                "task": task_name
             }
         )
     dataset.save_episode()
@@ -39,13 +41,14 @@ def convert_one_episode(task, episode, episode_path, dataset):
 
 def process_all_episodes():
     origin_data_root_dir = (
-        "/home/huanglingyu/data/downloads/ARIO/datasets/collection-Songling/series-1"
+        "/home/huanglingyu/data/downloads/ARIO/datasets/collection-Songling copy/series-1"
     )
     tasks = [
         task
         for task in os.listdir(origin_data_root_dir)
         if os.path.isdir(os.path.join(origin_data_root_dir, task))
     ]
+    dataset = create_lerobot_dataset()
 
     for task in tqdm(tasks, desc="Processing tasks"):
         task_path = os.path.join(origin_data_root_dir, task)
@@ -62,7 +65,7 @@ def process_all_episodes():
             episode_path = os.path.join(task_path, episode)
             # print(f"Processing episode: {episode}")
             # print(f"Episode path: {episode_path}")
-            convert_one_episode(task, episode, episode_path, create_lerobot_dataset())
+            convert_one_episode(task, episode, episode_path, dataset)
 
 
 def process_one_episode():
@@ -114,8 +117,8 @@ def create_lerobot_dataset():
 
 
 def main():
-    process_one_episode()
-    # process_all_episodes()
+    # process_one_episode()
+    process_all_episodes()
 
 
 if __name__ == "__main__":
