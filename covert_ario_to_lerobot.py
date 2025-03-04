@@ -8,7 +8,7 @@ from tqdm import tqdm
 from tools.read_episode_data import get_episode_data
 
 
-REPO_NAME = "lerobot"
+REPO_NAME = "ario"
 
 
 def convert_one_episode(task, episode, episode_path, dataset):
