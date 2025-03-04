@@ -8,8 +8,11 @@ from tqdm import tqdm
 import yaml
 from tools.read_episode_data import get_episode_data
 
+# 该脚本将ario中实际采集的双臂数据转为lerobot数据集
 
-REPO_NAME = "ario"
+REPO_NAME = "ario_real"
+input_path = "/home/huanglingyu/data/downloads/ARIO/datasets/collection-Songling/series-1"
+output_path = Path("datasets/lerobot/conversion/real")
 
 
 def convert_one_episode(instruction, episode_path, dataset):
@@ -47,18 +50,15 @@ def parse_instruction(yaml_file_path):
 
 
 def process_all_episodes():
-    origin_data_root_dir = (
-        "/home/huanglingyu/data/downloads/ARIO/datasets/collection-Songling/series-1"
-    )
     tasks = [
         task
-        for task in os.listdir(origin_data_root_dir)
-        if os.path.isdir(os.path.join(origin_data_root_dir, task))
+        for task in os.listdir(input_path)
+        if os.path.isdir(os.path.join(input_path, task))
     ]
     dataset = create_lerobot_dataset()
 
     for task in tqdm(tasks, desc="Processing tasks"):
-        task_path = os.path.join(origin_data_root_dir, task)
+        task_path = os.path.join(input_path, task)
         # print(f"Processing task: {task}")
 
         episodes = [
@@ -91,7 +91,6 @@ def process_one_episode():
 
 
 def create_lerobot_dataset():
-    output_path = Path("datasets/lerobot/conversion")
     if output_path.exists():
         shutil.rmtree(output_path)
 
