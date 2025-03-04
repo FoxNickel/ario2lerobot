@@ -23,7 +23,6 @@ def convert_one_episode(task, episode, episode_path, dataset):
     #     f"joint_position shape: {joint_position.shape}, image_high_frames: {len(image_high_frames)}, left_wrist_image_frames: {len(left_wrist_image_frames)}, right_wrist_image_frames: {len(right_wrist_image_frames)}"
     # )
     state_zeros = np.zeros(8)
-    task_name = task + "_" + episode
     # for i in tqdm(range(joint_position.shape[0]), desc=f"Processing {task} {episode}"):
     for i in range(joint_position.shape[0]):
         dataset.add_frame(
@@ -33,7 +32,7 @@ def convert_one_episode(task, episode, episode_path, dataset):
                 "right_wrist_image": right_wrist_image_frames[i],
                 "state": state_zeros,
                 "actions": joint_position[i],
-                "task": task_name
+                "task": task
             }
         )
     dataset.save_episode()
@@ -86,17 +85,17 @@ def create_lerobot_dataset():
         features={
             "image_high": {
                 "dtype": "image",
-                "shape": (480, 640, 3),
+                "shape": (120, 160, 3),
                 "names": ["height", "width", "channel"],
             },
             "left_wrist_image": {
                 "dtype": "image",
-                "shape": (480, 640, 3),
+                "shape": (120, 160, 3),
                 "names": ["height", "width", "channel"],
             },
             "right_wrist_image": {
                 "dtype": "image",
-                "shape": (480, 640, 3),
+                "shape": (120, 160, 3),
                 "names": ["height", "width", "channel"],
             },
             "state": {

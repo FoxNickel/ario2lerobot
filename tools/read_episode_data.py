@@ -59,13 +59,15 @@ def parse_single_arm_joint_position(type, episode_path):
 
 
 # 读取视频帧
-def read_video_frames(video_path):
+def read_video_frames(video_path, width=None, height=None):
     cap = cv2.VideoCapture(video_path)
     frames = []
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
+        if width is not None and height is not None:
+            frame = cv2.resize(frame, (width, height))
         frames.append(frame)
     cap.release()
     return frames
@@ -75,12 +77,14 @@ def read_video_frames(video_path):
 def get_episode_data(episode_path):
     joint_position = read_joint_position(episode_path)
 
-    image_high_frames = read_video_frames(episode_path + "/rgbd-cam_high/rgb.mp4")
+    image_high_frames = read_video_frames(
+        episode_path + "/rgbd-cam_high/rgb.mp4", width=160, height=120
+    )
     left_wrist_image_frames = read_video_frames(
-        episode_path + "/rgbd-cam_left_wrist/rgb.mp4"
+        episode_path + "/rgbd-cam_left_wrist/rgb.mp4", width=160, height=120
     )
     right_wrist_image_frames = read_video_frames(
-        episode_path + "/rgbd-cam_right_wrist/rgb.mp4"
+        episode_path + "/rgbd-cam_right_wrist/rgb.mp4", width=160, height=120
     )
 
     return (
