@@ -4,9 +4,10 @@ from lerobot.common.datasets.lerobot_dataset import (
 )
 
 # Let's take this one for this example
-repo_id = "ario"
+repo_id = "ario_real"
+output_path = "/home/huanglingyu/data/downloads/ARIO/datasets/lerobot/conversion/real"
 # We can have a look and fetch its metadata to know more about it:
-ds_meta = LeRobotDatasetMetadata(repo_id, root="/home/huanglingyu/data/downloads/ARIO/datasets/lerobot/conversion")
+ds_meta = LeRobotDatasetMetadata(repo_id, root=output_path)
 
 # By instantiating just this class, you can quickly access useful information about the content and the
 # structure of the dataset without downloading the actual data yet (only metadata files — which are
@@ -29,7 +30,7 @@ print(ds_meta)
 
 # You can then load the actual dataset from the hub.
 # Either load any subset of episodes:
-dataset = LeRobotDataset(repo_id, root="/home/huanglingyu/data/downloads/ARIO/datasets/lerobot/conversion", episodes=[0])
+dataset = LeRobotDataset(repo_id, root=output_path, episodes=[0])
 
 # And see how many frames you have:
 print(f"Selected episodes: {dataset.episodes}")

@@ -7,13 +7,19 @@ import cv2
 
 
 # 从txt文件读取joint数据, 左臂7维，右臂7维，共14维, 7维包含6个arm的joint和1个gripper的joint, gripper取了最后一维
-def read_joint_position(episode_path):
+def read_double_arm_joint_position(episode_path):
     # 获取左右臂各7维的数据
     left_joint_position = parse_single_arm_joint_position("left", episode_path)
     right_joint_position = parse_single_arm_joint_position("right", episode_path)
     # 将左右臂的joint数据拼接成一个14维的数据
     joint_position = np.column_stack((left_joint_position, right_joint_position))
     return joint_position
+
+
+# 读单臂joint数据
+def read_single_arm_joint_position(episode_path):
+    right_joint_position = parse_single_arm_joint_position("right", episode_path)
+    return right_joint_position
 
 
 # 解析单臂的joint数据
@@ -73,9 +79,9 @@ def read_video_frames(video_path, width=None, height=None):
     return frames
 
 
-# 读取一个episode的数据
-def get_episode_data(episode_path):
-    joint_position = read_joint_position(episode_path)
+# 读取一个来自实机的episode的数据
+def get_real_episode_data(episode_path):
+    joint_position = read_double_arm_joint_position(episode_path)
 
     image_high_frames = read_video_frames(
         episode_path + "/rgbd-cam_high/rgb.mp4", width=160, height=120
@@ -95,6 +101,28 @@ def get_episode_data(episode_path):
     )
 
 
+# 读取一个来自sim的episode的数据
+def get_sim_episode_data(episode_path):
+    joint_position = read_single_arm_joint_position(episode_path)
+
+    image_far_frames = read_video_frames(
+        episode_path + "/rgbd-1/rgb.mp4", width=160, height=120
+    )
+    image_high_frames = read_video_frames(
+        episode_path + "/rgbd-2/rgb.mp4", width=160, height=120
+    )
+    right_wrist_image_frames = read_video_frames(
+        episode_path + "/rgbd-3/rgb.mp4", width=160, height=120
+    )
+
+    return (
+        joint_position,
+        image_far_frames,
+        image_high_frames,
+        right_wrist_image_frames,
+    )
+
+
 # test
 def main():
     episode_path = "/home/huanglingyu/data/downloads/ARIO/datasets/collection-Songling/series-1/task-pick_U_driver_20_4_7th_PCL/episode-1"
@@ -103,7 +131,7 @@ def main():
         image_high_frames,
         left_wrist_image_frames,
         right_wrist_image_frames,
-    ) = get_episode_data(episode_path)
+    ) = get_real_episode_data(episode_path)
     print(f"Joint position shape: {joint_position.shape}")
     print(f"Number of RGB frames: {len(image_high_frames)}")
     print(f"Number of left wrist image frames: {len(left_wrist_image_frames)}")

@@ -6,7 +6,7 @@ import tyro
 import os
 from tqdm import tqdm
 import yaml
-from tools.read_episode_data import get_episode_data
+from tools.read_episode_data import get_real_episode_data
 
 # 该脚本将ario中实际采集的双臂数据转为lerobot数据集
 
@@ -21,7 +21,7 @@ def convert_one_episode(instruction, episode_path, dataset):
         image_high_frames,
         left_wrist_image_frames,
         right_wrist_image_frames,
-    ) = get_episode_data(episode_path)
+    ) = get_real_episode_data(episode_path)
 
     # print(
     #     f"joint_position shape: {joint_position.shape}, image_high_frames: {len(image_high_frames)}, left_wrist_image_frames: {len(left_wrist_image_frames)}, right_wrist_image_frames: {len(right_wrist_image_frames)}"

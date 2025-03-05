@@ -6,7 +6,7 @@ import tyro
 import os
 from tqdm import tqdm
 import yaml
-from tools.read_episode_data import get_episode_data
+from tools.read_episode_data import get_sim_episode_data
 
 # 该脚本将ario中虚拟环境的双臂数据转为lerobot数据集
 
@@ -18,10 +18,10 @@ output_path = Path("datasets/lerobot/conversion/ario_MuJoCo_UR5_open_bigdrawers"
 def convert_one_episode(instruction, episode_path, dataset):
     (
         joint_position,
+        image_far_frames,
         image_high_frames,
-        left_wrist_image_frames,
         right_wrist_image_frames,
-    ) = get_episode_data(episode_path)
+    ) = get_sim_episode_data(episode_path)
 
     # print(
     #     f"joint_position shape: {joint_position.shape}, image_high_frames: {len(image_high_frames)}, left_wrist_image_frames: {len(left_wrist_image_frames)}, right_wrist_image_frames: {len(right_wrist_image_frames)}"
@@ -31,8 +31,8 @@ def convert_one_episode(instruction, episode_path, dataset):
     for i in range(joint_position.shape[0]):
         dataset.add_frame(
             {
+                "image_far": image_far_frames[i],
                 "image_high": image_high_frames[i],
-                "left_wrist_image": left_wrist_image_frames[i],
                 "right_wrist_image": right_wrist_image_frames[i],
                 "state": state_zeros,
                 "actions": joint_position[i],
@@ -100,12 +100,12 @@ def create_lerobot_dataset():
         fps=30,
         root=output_path,
         features={
-            "image_high": {
+            "image_far": {
                 "dtype": "image",
                 "shape": (120, 160, 3),
                 "names": ["height", "width", "channel"],
             },
-            "left_wrist_image": {
+            "image_high": {
                 "dtype": "image",
                 "shape": (120, 160, 3),
                 "names": ["height", "width", "channel"],
@@ -122,7 +122,7 @@ def create_lerobot_dataset():
             },
             "actions": {
                 "dtype": "float64",
-                "shape": (14,),
+                "shape": (7,),
                 "names": ["actions"],
             },
         },
