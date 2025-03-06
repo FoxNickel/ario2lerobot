@@ -7,12 +7,15 @@ import os
 from tqdm import tqdm
 import yaml
 from tools.read_episode_data import get_sim_episode_data
+# 禁掉lerobot自己的进度条
+from datasets import disable_progress_bars
+disable_progress_bars()
 
 # 该脚本将ario中虚拟环境的双臂数据转为lerobot数据集
 
-REPO_NAME = "ario_MuJoCo_UR5_open_bigdrawers"
-input_path = "/home/huanglingyu/data/downloads/ARIO/datasets/collection_open_bigdrawers-mp4/series-1"
-output_path = Path("datasets/lerobot/conversion/ario_MuJoCo_UR5_open_bigdrawers")
+REPO_NAME = "ario_MuJoCo_UR5_pick_place"
+input_path = "/home/huanglingyu/data/downloads/ARIO/datasets/collection_PickPlace/series-1"
+output_path = Path("datasets/lerobot/conversion/ario_MuJoCo_UR5_pick_place")
 
 
 def convert_one_episode(instruction, episode_path, dataset):
@@ -43,9 +46,9 @@ def convert_one_episode(instruction, episode_path, dataset):
 
 
 def parse_instruction(yaml_file_path):
-    with open(yaml_file_path, 'r', encoding='utf-8') as file:
+    with open(yaml_file_path, "r", encoding="utf-8") as file:
         data = yaml.safe_load(file)
-        instruction = data.get('instruction_EN')
+        instruction = data.get("instruction_EN")
         return instruction
 
 
@@ -55,6 +58,7 @@ def process_all_episodes():
         for task in os.listdir(input_path)
         if os.path.isdir(os.path.join(input_path, task))
     ]
+    tasks.sort(key=lambda x: int(x.split("-")[-1]))  # 按序号排序
     dataset = create_lerobot_dataset()
 
     for task in tqdm(tasks, desc="Processing tasks"):
@@ -73,8 +77,9 @@ def process_all_episodes():
         ]
         instruction = parse_instruction(os.path.join(task_path, description[0]))
         # print(f"task: {task}, instruction: {instruction}")
-        
+
         episodes.sort(key=lambda x: int(x.split("-")[-1]))  # 按序号排序
+        # print(f"task: {task}, episodes: {episodes}")
 
         for episode in tqdm(episodes, desc=f"Processing episodes in {task}"):
             episode_path = os.path.join(task_path, episode)
@@ -85,9 +90,7 @@ def process_all_episodes():
 
 def process_one_episode():
     episode_path = "/home/huanglingyu/data/downloads/ARIO/datasets/collection-Songling/series-1/task-pick_water_50_4_7th/episode-1"
-    convert_one_episode(
-        "instruction task pick", episode_path, create_lerobot_dataset()
-    )
+    convert_one_episode("instruction task pick", episode_path, create_lerobot_dataset())
 
 
 def create_lerobot_dataset():

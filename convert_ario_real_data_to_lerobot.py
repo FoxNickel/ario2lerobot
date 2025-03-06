@@ -7,12 +7,15 @@ import os
 from tqdm import tqdm
 import yaml
 from tools.read_episode_data import get_real_episode_data
+# 禁掉lerobot自己的进度条
+from datasets import disable_progress_bars
+disable_progress_bars()
 
 # 该脚本将ario中实际采集的双臂数据转为lerobot数据集
 
-REPO_NAME = "ario_real"
+REPO_NAME = "ario_agilex_aloha"
 input_path = "/home/huanglingyu/data/downloads/ARIO/datasets/collection-Songling/series-1"
-output_path = Path("datasets/lerobot/conversion/real")
+output_path = Path("datasets/lerobot/conversion/ario_agilex_aloha")
 
 
 def convert_one_episode(instruction, episode_path, dataset):
