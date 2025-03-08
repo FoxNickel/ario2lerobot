@@ -11,18 +11,15 @@ from tools.read_episode_data import get_sim_episode_data
 from datasets import disable_progress_bars
 disable_progress_bars()
 
-# 该脚本将ario中虚拟环境的双臂数据转为lerobot数据集
-
-REPO_NAME = "ario_MuJoCo_UR5_pick_place"
-input_path = "/home/huanglingyu/data/downloads/ARIO/datasets/collection_PickPlace/series-1"
-output_path = Path("datasets/lerobot/conversion/ario_MuJoCo_UR5_pick_place")
+# 该脚本将ario中虚拟环境的单臂数据转为lerobot数据集, 一次只能转一个文件夹下面的数据
 
 
 def convert_one_episode(instruction, episode_path, dataset):
     (
         joint_position,
-        image_far_frames,
-        image_high_frames,
+        eef_position,
+        image_y_frames,
+        image_z_frames,
         right_wrist_image_frames,
     ) = get_sim_episode_data(episode_path)
 
@@ -34,11 +31,11 @@ def convert_one_episode(instruction, episode_path, dataset):
     for i in range(joint_position.shape[0]):
         dataset.add_frame(
             {
-                "image_far": image_far_frames[i],
-                "image_high": image_high_frames[i],
-                "right_wrist_image": right_wrist_image_frames[i],
+                "image": image_z_frames[i],
+                "wrist_image": right_wrist_image_frames[i],
                 "state": state_zeros,
-                "actions": joint_position[i],
+                "actions": eef_position[i],
+                "joint_actions": joint_position[i],
                 "task": instruction,
             }
         )
@@ -52,14 +49,13 @@ def parse_instruction(yaml_file_path):
         return instruction
 
 
-def process_all_episodes():
+def process_all_episodes(dataset, input_path, output_path):    
     tasks = [
         task
         for task in os.listdir(input_path)
         if os.path.isdir(os.path.join(input_path, task))
     ]
     tasks.sort(key=lambda x: int(x.split("-")[-1]))  # 按序号排序
-    dataset = create_lerobot_dataset()
 
     for task in tqdm(tasks, desc="Processing tasks"):
         task_path = os.path.join(input_path, task)
@@ -83,37 +79,32 @@ def process_all_episodes():
 
         for episode in tqdm(episodes, desc=f"Processing episodes in {task}"):
             episode_path = os.path.join(task_path, episode)
-            # print(f"Processing episode: {episode}")
+            print(f"Processing episode: {episode}")
             # print(f"Episode path: {episode_path}")
             convert_one_episode(instruction, episode_path, dataset)
 
 
 def process_one_episode():
     episode_path = "/home/huanglingyu/data/downloads/ARIO/datasets/collection-Songling/series-1/task-pick_water_50_4_7th/episode-1"
-    convert_one_episode("instruction task pick", episode_path, create_lerobot_dataset())
+    convert_one_episode("instruction task pick", episode_path, create_ur5_lerobot_dataset())
 
 
-def create_lerobot_dataset():
+def create_ur5_lerobot_dataset(repo_name, output_path):
     if output_path.exists():
         shutil.rmtree(output_path)
 
     dataset = LeRobotDataset.create(
-        repo_id=REPO_NAME,
-        robot_type="agilex-aloha",
+        repo_id=repo_name,
+        robot_type="ur5",
         fps=30,
         root=output_path,
         features={
-            "image_far": {
+            "image": {
                 "dtype": "image",
                 "shape": (120, 160, 3),
                 "names": ["height", "width", "channel"],
             },
-            "image_high": {
-                "dtype": "image",
-                "shape": (120, 160, 3),
-                "names": ["height", "width", "channel"],
-            },
-            "right_wrist_image": {
+            "wrist_image": {
                 "dtype": "image",
                 "shape": (120, 160, 3),
                 "names": ["height", "width", "channel"],
@@ -128,6 +119,11 @@ def create_lerobot_dataset():
                 "shape": (7,),
                 "names": ["actions"],
             },
+            "joint_actions": {
+                "dtype": "float64",
+                "shape": (7,),
+                "names": ["joint_actions"],
+            },
         },
         image_writer_threads=10,
         image_writer_processes=5,
@@ -137,7 +133,11 @@ def create_lerobot_dataset():
 
 def main():
     # process_one_episode()
-    process_all_episodes()
+    repo_name = "ario_MuJoCo_UR5"
+    input_path = "/home/huanglingyu/data/downloads/ARIO/datasets/collection_PickPlace/series-1"
+    output_path = Path("datasets/lerobot/conversion/ario_MuJoCo_UR5_pick_place")
+    dataset = create_ur5_lerobot_dataset(repo_name, output_path)
+    process_all_episodes(dataset, input_path, output_path)
 
 
 if __name__ == "__main__":

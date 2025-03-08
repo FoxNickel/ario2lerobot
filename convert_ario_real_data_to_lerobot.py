@@ -137,6 +137,11 @@ def create_lerobot_dataset():
 
 def main():
     # process_one_episode()
+    # 转之前先清空output_path
+    if output_path.exists():
+        shutil.rmtree(output_path)
+    print(f"清除{output_path}成功")
+    
     process_all_episodes()
 
 
