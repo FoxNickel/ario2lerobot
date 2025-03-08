@@ -87,6 +87,35 @@ def parse_eef_position(episode_path):
     return eef_positions
 
 
+# 解析双臂eef的各7维数据(x, y, z, pitch, roll, yaw, gripper闭合), 从gripper.txt文件里面读的
+def parse_double_arm_eef_position(episode_path):
+    master_files = []
+    # 遍历 episode_path 文件夹
+    for root, dirs, files in os.walk(episode_path):
+        for file in files:
+            # 检查文件名是否包含'gripper' 且后缀为 '.txt'
+            if "gripper" in file and file.endswith(".txt"):
+                master_files.append(os.path.join(root, file))
+    master_files = sorted(master_files)
+    # print(master_files)
+
+    # 初始化一个空列表来存储每个文件的eef数据
+    left_eef_positions = None
+
+    # 读取每个joint文件的数据
+    for master_file in master_files:
+        if "left" in master_file:
+            left_eef_positions = np.loadtxt(master_file, usecols=[1, 2, 3, 4, 5, 6, 7])
+        if "right" in master_file:
+            right_eef_positions = np.loadtxt(master_file, usecols=[1, 2, 3, 4, 5, 6, 7])
+
+    # print("left_eef_positions shape:", left_eef_positions.shape)
+    # print("right_eef_positions shape:", right_eef_positions.shape)
+    combined_eef_positions = np.column_stack((left_eef_positions, right_eef_positions))
+    # print("combined_eef_positions shape:", combined_eef_positions.shape)
+    return combined_eef_positions
+
+
 # 读取视频帧
 def read_video_frames(video_path, width=None, height=None):
     cap = cv2.VideoCapture(video_path)
@@ -105,8 +134,9 @@ def read_video_frames(video_path, width=None, height=None):
 # 读取一个来自实机的episode的数据
 def get_real_episode_data(episode_path):
     joint_position = read_double_arm_joint_position(episode_path)
+    eef_position = parse_double_arm_eef_position(episode_path)
 
-    image_z_frames = read_video_frames(
+    image_high_frames = read_video_frames(
         episode_path + "/rgbd-cam_high/rgb.mp4", width=160, height=120
     )
     left_wrist_image_frames = read_video_frames(
@@ -118,7 +148,8 @@ def get_real_episode_data(episode_path):
 
     return (
         joint_position,
-        image_z_frames,
+        eef_position,
+        image_high_frames,
         left_wrist_image_frames,
         right_wrist_image_frames,
     )
@@ -150,17 +181,20 @@ def get_sim_episode_data(episode_path):
 
 # test
 def main():
-    episode_path = "/home/huanglingyu/data/downloads/ARIO/datasets/collection_Grasp/series-1/task-1/episode-1"
-    (
-        joint_position,
-        image_z_frames,
-        left_wrist_image_frames,
-        right_wrist_image_frames,
-    ) = get_real_episode_data(episode_path)
-    print(f"Joint position shape: {joint_position.shape}")
-    print(f"Number of RGB frames: {len(image_z_frames)}")
-    print(f"Number of left wrist image frames: {len(left_wrist_image_frames)}")
-    print(f"Number of right wrist image frames: {len(right_wrist_image_frames)}")
+    # episode_path = "/home/huanglingyu/data/downloads/ARIO/datasets/collection_Grasp/series-1/task-1/episode-1"
+    # (
+    #     joint_position,
+    #     image_z_frames,
+    #     left_wrist_image_frames,
+    #     right_wrist_image_frames,
+    # ) = get_real_episode_data(episode_path)
+    # print(f"Joint position shape: {joint_position.shape}")
+    # print(f"Number of RGB frames: {len(image_z_frames)}")
+    # print(f"Number of left wrist image frames: {len(left_wrist_image_frames)}")
+    # print(f"Number of right wrist image frames: {len(right_wrist_image_frames)}")
+    parse_double_arm_eef_position(
+        "/home/huanglingyu/data/downloads/ARIO/datasets/collection-Songling/series-1/task-pick_U_driver_20_4_7th_PCL/episode-1"
+    )
 
 
 if __name__ == "__main__":
