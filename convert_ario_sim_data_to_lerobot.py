@@ -7,6 +7,7 @@ import os
 from tqdm import tqdm
 import yaml
 from tools.read_episode_data import get_sim_episode_data
+from tools.config import img_width, img_height, img_channel
 # 禁掉lerobot自己的进度条
 from datasets import disable_progress_bars
 disable_progress_bars()
@@ -90,9 +91,6 @@ def process_one_episode():
 
 
 def create_ur5_lerobot_dataset(repo_name, output_path):
-    if output_path.exists():
-        shutil.rmtree(output_path)
-
     dataset = LeRobotDataset.create(
         repo_id=repo_name,
         robot_type="ur5",
@@ -101,12 +99,12 @@ def create_ur5_lerobot_dataset(repo_name, output_path):
         features={
             "image": {
                 "dtype": "image",
-                "shape": (120, 160, 3),
+                "shape": (img_height, img_width, img_channel),
                 "names": ["height", "width", "channel"],
             },
             "wrist_image": {
                 "dtype": "image",
-                "shape": (120, 160, 3),
+                "shape": (img_height, img_width, img_channel),
                 "names": ["height", "width", "channel"],
             },
             "state": {

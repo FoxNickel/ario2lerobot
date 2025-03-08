@@ -7,6 +7,7 @@ import os
 from tqdm import tqdm
 import yaml
 from tools.read_episode_data import get_real_episode_data
+from tools.config import img_width, img_height, img_channel
 
 # 禁掉lerobot自己的进度条
 from datasets import disable_progress_bars
@@ -98,17 +99,17 @@ def create_lerobot_dataset(repo_name, output_path):
         features={
             "image": {
                 "dtype": "image",
-                "shape": (120, 160, 3),
+                "shape": (img_height, img_width, img_channel),
                 "names": ["height", "width", "channel"],
             },
             "wrist_image": {
                 "dtype": "image",
-                "shape": (120, 160, 3),
+                "shape": (img_height, img_width, img_channel),
                 "names": ["height", "width", "channel"],
             },
             "addition_wrist_image": {
                 "dtype": "image",
-                "shape": (120, 160, 3),
+                "shape": (img_height, img_width, img_channel),
                 "names": ["height", "width", "channel"],
             },
             "state": {
@@ -135,13 +136,13 @@ def main():
         "/home/huanglingyu/data/downloads/ARIO/datasets/collection-Songling/series-1"
     )
     output_path = Path("datasets/lerobot/conversion/ario_real_agilex_aloha")
-    dataset = create_lerobot_dataset(repo_name, output_path)
-    
+
     # 转之前先清空output_path
     if output_path.exists():
         shutil.rmtree(output_path)
     print(f"清除{output_path}成功")
 
+    dataset = create_lerobot_dataset(repo_name, output_path)
     process_all_episodes(dataset, input_path, output_path)
 
 
