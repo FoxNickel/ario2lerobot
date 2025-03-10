@@ -2,7 +2,7 @@ import tyro
 import os
 import numpy as np
 import cv2
-from tools.config import img_width, img_height
+from tools.config import ario_img_width, ario_img_height
 
 # 该脚本作用是读取一个episode的数据
 
@@ -138,13 +138,13 @@ def get_real_episode_data(episode_path):
     eef_position = parse_double_arm_eef_position(episode_path)
 
     image_high_frames = read_video_frames(
-        episode_path + "/rgbd-cam_high/rgb.mp4", width=img_width, height=img_height
+        episode_path + "/rgbd-cam_high/rgb.mp4", width=ario_img_width, height=ario_img_height
     )
     left_wrist_image_frames = read_video_frames(
-        episode_path + "/rgbd-cam_left_wrist/rgb.mp4", width=img_width, height=img_height
+        episode_path + "/rgbd-cam_left_wrist/rgb.mp4", width=ario_img_width, height=ario_img_height
     )
     right_wrist_image_frames = read_video_frames(
-        episode_path + "/rgbd-cam_right_wrist/rgb.mp4", width=img_width, height=img_height
+        episode_path + "/rgbd-cam_right_wrist/rgb.mp4", width=ario_img_width, height=ario_img_height
     )
 
     return (
@@ -162,13 +162,13 @@ def get_sim_episode_data(episode_path):
     eef_position = parse_eef_position(episode_path)
 
     image_y_frames = read_video_frames(
-        episode_path + "/rgbd-1/rgb.mp4", width=img_width, height=img_height
+        episode_path + "/rgbd-1/rgb.mp4", width=ario_img_width, height=ario_img_height
     )
     image_z_frames = read_video_frames(
-        episode_path + "/rgbd-2/rgb.mp4", width=img_width, height=img_height
+        episode_path + "/rgbd-2/rgb.mp4", width=ario_img_width, height=ario_img_height
     )
     right_wrist_image_frames = read_video_frames(
-        episode_path + "/rgbd-3/rgb.mp4", width=img_width, height=img_height
+        episode_path + "/rgbd-3/rgb.mp4", width=ario_img_width, height=ario_img_height
     )
 
     return (

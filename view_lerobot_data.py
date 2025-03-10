@@ -7,8 +7,12 @@ import numpy as np
 
 def main():
     # Let's take this one for this example
-    repo_id = "ario_real_agilex_aloha"
-    output_path = "/home/huanglingyu/data/downloads/ARIO/datasets/lerobot/conversion/ario_real_agilex_aloha"
+    # 真实数据
+    # repo_id = "ario_real_agilex_aloha"
+    # output_path = "/home/huanglingyu/data/downloads/ARIO/datasets/lerobot/conversion/ario_real_agilex_aloha"
+    # sim数据
+    repo_id = "ario_MuJoCo_UR5"
+    output_path = "/home/huanglingyu/data/downloads/ARIO/datasets/lerobot/conversion/ario_MuJoCo_UR5"
     # We can have a look and fetch its metadata to know more about it:
     ds_meta = LeRobotDatasetMetadata(repo_id, root=output_path)
 
@@ -43,7 +47,7 @@ def main():
     # print(f"dataset[0]image: {dataset[0]['image'].shape}")
     save_image(dataset, "image")
     save_image(dataset, "wrist_image")
-    save_image(dataset, "addition_wrist_image")
+    # save_image(dataset, "addition_wrist_image")
 
 def save_image(dataset, img_name):
     img_data = dataset[0][img_name]
