@@ -35,7 +35,7 @@ def convert_one_episode(episode, dataset, task_name):
         proprioception_grippers = states["proprioception_grippers"]
         state = np.concatenate(
             [proprioception, proprioception_floating_base, proprioception_grippers]
-        )
+        ).astype(np.float32)
         image = np.transpose(states["rgb_head"], (1, 2, 0)) / 255.0
         wrist_image = np.transpose(states["rgb_left_wrist"], (1, 2, 0)) / 255.0
         addition_wrist_image = (
@@ -48,7 +48,7 @@ def convert_one_episode(episode, dataset, task_name):
         # TODO: 补0不应该补到最后
         if action.shape[0] < 16:
             action = np.concatenate([action, np.zeros(16 - action.shape[0])])
-
+        action = action.astype(np.float32)
         dataset.add_frame(
             {
                 "image": image,
