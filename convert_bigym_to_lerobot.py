@@ -10,33 +10,53 @@ from tools.config import bigym_img_height, bigym_img_width, bigym_img_channel
 from tqdm import tqdm
 import shutil
 from pathlib import Path
+import os
 
 
-def convert_one_episode(episode, dataset):
-    # 造的数据, 一个episode只有一个trajectory
-    # TODO: trajectory_num = len(episode)
-    trajectory_num = 1
-    state_zeros = np.zeros(8)
+def convert_one_episode(episode, dataset, task_name):
+    trajectory_num = len(episode)
     for i in range(trajectory_num):
-        state = episode[i][0]
-        actions = episode[i][1]
-        # print(f"actions: {actions}")
-        image = np.transpose(state["rgb_head"], (1, 2, 0)) / 255.0
-        wrist_image = np.transpose(state["rgb_left_wrist"], (1, 2, 0)) / 255.0
-        addition_wrist_image = np.transpose(state["rgb_right_wrist"], (1, 2, 0)) / 255.0
+        states = episode[i][0]
+        proprioception = states["proprioception"]
+        # TODO: 补0不应该补到最后
+        if proprioception.shape[0] < 60:
+            proprioception = np.concatenate(
+                [proprioception, np.zeros(60 - proprioception.shape[0])]
+            )
+        proprioception_floating_base = states["proprioception_floating_base"]
+        # TODO: 补0不应该补到最后
+        if proprioception_floating_base.shape[0] < 4:
+            proprioception_floating_base = np.concatenate(
+                [
+                    proprioception_floating_base,
+                    np.zeros(4 - proprioception_floating_base.shape[0]),
+                ]
+            )
+        proprioception_grippers = states["proprioception_grippers"]
+        state = np.concatenate(
+            [proprioception, proprioception_floating_base, proprioception_grippers]
+        )
+        image = np.transpose(states["rgb_head"], (1, 2, 0)) / 255.0
+        wrist_image = np.transpose(states["rgb_left_wrist"], (1, 2, 0)) / 255.0
+        addition_wrist_image = (
+            np.transpose(states["rgb_right_wrist"], (1, 2, 0)) / 255.0
+        )
+
+        # action在最后一个字段里面, 这里可能不止两个字段, 所以用-1取
+        actions = episode[i][-1]
         action = actions["demo_action"]
-        # print(f"action: {action}")
         # TODO: 补0不应该补到最后
         if action.shape[0] < 16:
             action = np.concatenate([action, np.zeros(16 - action.shape[0])])
+
         dataset.add_frame(
             {
                 "image": image,
                 "wrist_image": wrist_image,
                 "addition_wrist_image": addition_wrist_image,
-                "state": state_zeros,
+                "state": state,
                 "actions": action,
-                "task": "move_plate",
+                "task": task_name,
             }
         )
     dataset.save_episode()
@@ -65,12 +85,12 @@ def create_bigym_lerobot_dataset(repo_name, output_path):
                 "names": ["height", "width", "channel"],
             },
             "state": {
-                "dtype": "float64",
-                "shape": (8,),
+                "dtype": "float32",
+                "shape": (66,),
                 "names": ["state"],
             },
             "actions": {
-                "dtype": "float64",
+                "dtype": "float32",
                 "shape": (16,),
                 "names": ["actions"],
             },
@@ -83,6 +103,7 @@ def create_bigym_lerobot_dataset(repo_name, output_path):
 
 def main():
     repo_name = "bigym"
+    input_path = "/home/huanglingyu/data/robobase/data"
     output_path = Path("datasets/lerobot/conversion/bigym")
 
     if output_path.exists():
@@ -91,11 +112,20 @@ def main():
 
     dataset = create_bigym_lerobot_dataset(repo_name, output_path)
 
-    # TODO: 等bigym数据生成完之后再改
-    with open("/home/huanglingyu/data/robobase/move_plate_copy.pkl", "rb") as f:
-        episodes = pickle.load(f)
-        for episode in tqdm(episodes, desc="Processing episodes"):
-            convert_one_episode(episode, dataset)
+    for root, dirs, files in os.walk(input_path):
+        # print(f"root: {root}, dirs: {dirs}, files: {files}")
+        for file in tqdm(files, desc="Processing files"):
+            if file.endswith(".pkl"):
+                task_name = file.split(".")[0]
+                print(f"Processing task: {task_name}")
+                file_path = os.path.join(root, file)
+                # print(f"file_path: {file_path}")
+                with open(file_path, "rb") as f:
+                    episodes = pickle.load(f)
+                    for episode in tqdm(
+                        episodes, desc=f"Processing episodes in task {task_name}"
+                    ):
+                        convert_one_episode(episode, dataset, task_name)
 
 
 if __name__ == "__main__":
