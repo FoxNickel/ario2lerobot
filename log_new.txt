@@ -1,0 +1,80 @@
+Processing task: dishwasher_load_cups
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: sandwich_flip
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: flip_cutlery
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: store_groceries_lower
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: reach_target_dual
+proprioception.shape: 58, proprioception_floating_base.shape: 3, proprioception_grippers.shape: 2, action.shape: 15
+Processing task: put_cups
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: cupboards_close_all
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: drawers_open_all
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: store_kitchenware
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: dishwasher_unload_plates_long
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: reach_target_single
+proprioception.shape: 58, proprioception_floating_base.shape: 3, proprioception_grippers.shape: 2, action.shape: 15
+Processing task: reach_target_multi_modal
+proprioception.shape: 58, proprioception_floating_base.shape: 3, proprioception_grippers.shape: 2, action.shape: 15
+Processing task: drawers_close_all
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: move_two_plates
+proprioception.shape: 58, proprioception_floating_base.shape: 3, proprioception_grippers.shape: 2, action.shape: 15
+Processing task: dishwasher_unload_cups_long
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: saucepan_to_hob
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: cupboards_open_all
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: dishwasher_unload_plates
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: dishwasher_close
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: dishwasher_close_trays
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: dishwasher_unload_cutlery
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: pick_box
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: move_plate
+proprioception.shape: 58, proprioception_floating_base.shape: 3, proprioception_grippers.shape: 2, action.shape: 15
+Processing task: dishwasher_unload_cutlery_long
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: store_box
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: drawer_top_open
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: dishwasher_open_trays
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: wall_cupboard_open
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: sandwich_toast
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: dishwasher_load_plates
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: dishwasher_open
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: stack_blocks
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: take_cups
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: sandwich_remove
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: drawer_top_close
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: wall_cupboard_close
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: flip_cup
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: dishwasher_unload_cups
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: store_groceries_upper
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16
+Processing task: dishwasher_load_cutlery
+proprioception.shape: 60, proprioception_floating_base.shape: 4, proprioception_grippers.shape: 2, action.shape: 16

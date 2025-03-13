@@ -45,9 +45,9 @@ def convert_one_episode(episode, dataset, task_name):
         # action在最后一个字段里面, 这里可能不止两个字段, 所以用-1取
         actions = episode[i][-1]
         action = actions["demo_action"]
-        # TODO: 补0不应该补到最后
+        # 若action长度小于16, 则补0到第三位(应该是15位, 补一个0就好)
         if action.shape[0] < 16:
-            action = np.concatenate([action, np.zeros(16 - action.shape[0])])
+            action = np.insert(action, 2, np.zeros(16 - action.shape[0]))
         action = action.astype(np.float32)
         dataset.add_frame(
             {
@@ -101,6 +101,33 @@ def create_bigym_lerobot_dataset(repo_name, output_path):
     return dataset
 
 
+def show_episode_info(episode):
+    states = episode[0][0]
+    proprioception = states["proprioception"]
+    proprioception_floating_base = states["proprioception_floating_base"]
+    proprioception_grippers = states["proprioception_grippers"]
+
+    actions = episode[0][-1]
+    action = actions["demo_action"]
+    print(
+        f"proprioception.shape: {len(proprioception)}, proprioception_floating_base.shape: {len(proprioception_floating_base)}, proprioception_grippers.shape: {len(proprioception_grippers)}, action.shape: {len(action)}"
+    )
+
+
+def show_pkl_info(input_path):
+    for root, dirs, files in os.walk(input_path):
+        # print(f"root: {root}, dirs: {dirs}, files: {files}")
+        for file in tqdm(files, desc="Processing files"):
+            if file.endswith(".pkl"):
+                task_name = file.split(".")[0]
+                print(f"Processing task: {task_name}")
+                file_path = os.path.join(root, file)
+                # print(f"file_path: {file_path}")
+                with open(file_path, "rb") as f:
+                    episodes = pickle.load(f)
+                    show_episode_info(episodes[0])
+
+
 def main():
     repo_name = "bigym"
     input_path = "/home/huanglingyu/data/robobase/data"
@@ -129,4 +156,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    input_path = "/home/huanglingyu/data/robobase/data"
+    show_pkl_info(input_path)
