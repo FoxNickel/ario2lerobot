@@ -18,19 +18,17 @@ def convert_one_episode(episode, dataset, task_name):
     for i in range(trajectory_num):
         states = episode[i][0]
         proprioception = states["proprioception"]
-        # TODO: 补0不应该补到最后
+        # 分为前30维和后30维, 小于60时补零补到前30维里面的倒数第二维和后30里面的倒数第二维
         if proprioception.shape[0] < 60:
-            proprioception = np.concatenate(
-                [proprioception, np.zeros(60 - proprioception.shape[0])]
-            )
+            proprioception = np.insert(proprioception, -1, 0)
+            proprioception = np.insert(proprioception, 28, 0)
         proprioception_floating_base = states["proprioception_floating_base"]
-        # TODO: 补0不应该补到最后
+        # 补0补到倒数第二位, z的位置
         if proprioception_floating_base.shape[0] < 4:
-            proprioception_floating_base = np.concatenate(
-                [
-                    proprioception_floating_base,
-                    np.zeros(4 - proprioception_floating_base.shape[0]),
-                ]
+            proprioception_floating_base = np.insert(
+                proprioception_floating_base,
+                -1,
+                np.zeros(4 - proprioception_floating_base.shape[0]),
             )
         proprioception_grippers = states["proprioception_grippers"]
         state = np.concatenate(
@@ -156,6 +154,6 @@ def main():
 
 
 if __name__ == "__main__":
-    # main()
-    input_path = "/home/huanglingyu/data/robobase/data"
-    show_pkl_info(input_path)
+    main()
+    # input_path = "/home/huanglingyu/data/robobase/data"
+    # show_pkl_info(input_path)
