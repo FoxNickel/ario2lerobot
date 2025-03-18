@@ -11,8 +11,8 @@ def main():
     # repo_id = "ario_real_agilex_aloha"
     # output_path = "/home/huanglingyu/data/downloads/ARIO/datasets/lerobot/conversion/ario_real_agilex_aloha"
     # sim数据
-    repo_id = "ario_MuJoCo_UR5"
-    output_path = "/home/huanglingyu/data/downloads/ARIO/datasets/lerobot/conversion/ario_MuJoCo_UR5"
+    repo_id = "bigym_v2"
+    output_path = "/home/huanglingyu/data/downloads/ARIO/datasets/lerobot/conversion/bigym_v2"
     # We can have a look and fetch its metadata to know more about it:
     ds_meta = LeRobotDatasetMetadata(repo_id, root=output_path)
 
@@ -44,6 +44,8 @@ def main():
     # print(f"Number of episodes selected: {dataset.num_episodes}")
     # print(f"Number of frames selected: {dataset.num_frames}")
     print(f"dataset[0]actions: {dataset[0]['actions']}")
+    print(f"dataset[0]uuid: {dataset[0]['uuid']}")
+    print(f"dataset[0]environment_data: {dataset[0]['environment_data']}")
     # print(f"dataset[0]image: {dataset[0]['image'].shape}")
     save_image(dataset, "image")
     save_image(dataset, "wrist_image")
