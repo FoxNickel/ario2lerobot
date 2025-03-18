@@ -209,8 +209,8 @@ def main():
             relative_path = os.path.relpath(root, input_path)
             # print(f"relative_path: {relative_path}")
             task_name = relative_path.split(os.sep)[0]
-            print(f"task name: {task_name}")
-            for file in tqdm(files, desc="Processing files"):
+            # print(f"task name: {task_name}")
+            for file in tqdm(files, desc=f"Processing task: {task_name}"):
                 # print(f"task: {task_name}, file: {file}")
                 # 读tensor文件, 然后转, 得看下episode格式
                 file_path = os.path.join(root, file)
